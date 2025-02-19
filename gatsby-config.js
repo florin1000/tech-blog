@@ -17,7 +17,7 @@ module.exports = {
     description: `Tech blog #algorithms #Javascript`,
     siteUrl: `https://my-domain.com`,
     social: {
-      twitter: `florin`,
+      twitter: `---`,
     },
   },
   plugins: [
