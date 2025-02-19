@@ -1,0 +1,67 @@
+/* src/styles/prism-custom.css */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #999988;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #ccc;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #f92672;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #66d9ef;
+}
+
+.token.function,
+.token.class-name {
+  color: #e6db74;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #fd971f;
+}
+
+.token.deleted {
+  color: #f92672;
+}
+
+/* Optional: Add a subtle background and border radius to code blocks */
+pre[class*="language-"] {
+  background: #2d2d2d;
+  padding: 1em;
+  border-radius: 8px;
+  overflow: auto;
+}
