@@ -18,7 +18,7 @@ anagrams of each other. An anagram is a word or phrase formed by rearranging the
 
 #### Approach
 
-1. The first solution involves converting each string into an array of characters, sorting these arrays, and then joining them back into strings. If the sorted strings are equal, then the original strings are anagrams.
+1. One way of solving this involves converting each string into an array of characters, sorting these arrays, and then joining them back into strings. If the sorted strings are equal, then the original strings are anagrams.
 2. Using a proper Data structure like a hash map or an object to count the frequency of each character in the strings. Then, by comparing the character counts for both strings, you can determine if they are anagrams.
 
 #### Solution 1
