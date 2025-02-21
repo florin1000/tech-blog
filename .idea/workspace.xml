@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa9321c7-64c8-4012-9bf9-ffb5a5caeec8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/blog/Algorithms-anagram/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/blog/Algorithms-anagram/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/blog/Algorithms-valid-parentheses/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/blog/Algorithms-valid-parentheses/index.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +66,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-WS-243.24978.60" />
       </set>
     </attachedChunks>
   </component>
@@ -83,7 +82,8 @@
       <workItem from="1739957104787" duration="10766000" />
       <workItem from="1739972389527" duration="15000" />
       <workItem from="1740038302949" duration="1619000" />
-      <workItem from="1740040355677" duration="1640000" />
+      <workItem from="1740040355677" duration="1849000" />
+      <workItem from="1740127006494" duration="4864000" />
     </task>
     <servers />
   </component>
