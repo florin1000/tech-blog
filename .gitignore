@@ -64,6 +64,7 @@ public
 # editor
 .idea
 /.idea
+.idea/
 # Yarn
 yarn-error.log
 .pnp/

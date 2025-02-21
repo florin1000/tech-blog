@@ -64,7 +64,6 @@ We use a stack (bufferStack) to keep track of the opening parentheses as we iter
 #### Conclusion
 
 This solution is efficient, operating in O(n) time by leveraging a stack to manage matching parentheses. By processing each character only once, it efficiently validates whether all brackets in the input are correctly paired and nested.
-enough 
 #### Reference
 - [Codewars - Anagram Problems](https://www.codewars.com/kata/search/?q=parentheses&order_by=sort_date%20desc)
 - [LeetCode - Anagram Problems](https://leetcode.com/problemset/?search=parentheses)
