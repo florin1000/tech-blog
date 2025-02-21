@@ -12,6 +12,7 @@ import "@fontsource/merriweather"
 // normalize CSS across browsers
 import "./src/normalize.css"
 // custom CSS styles
+import "./src/tailwind-default.css"
 import "./src/style.css"
 
 import "@fontsource/ibm-plex-sans/400.css"; // for body
