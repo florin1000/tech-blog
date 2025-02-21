@@ -1,7 +1,9 @@
 ---
-title: Algorithms - Climbing Stairs
+title: Climbing Stairs
 date: "2024-05-28T22:40:32.169Z"
 description: In how many ways you can climb a staircase
+category: "Algorithms"
+tags: "algorithms, stairs"
 ---
 
 > **Problem**   

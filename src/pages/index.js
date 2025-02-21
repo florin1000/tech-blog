@@ -6,10 +6,11 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 
 const BlogIndex = ({ data, location }) => {
-  const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMarkdownRemark.nodes
+  const siteTitle = data.site.siteMetadata?.title || `Algorithms blog`
+  const groups = data.allMarkdownRemark.group
+  console.log(groups)
 
-  if (posts.length === 0) {
+  if (groups.length === 0) {
     return (
       <Layout location={location} title={siteTitle}>
         <Bio />
@@ -25,38 +26,28 @@ const BlogIndex = ({ data, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       <Bio />
-      <ol style={{ listStyle: `none` }}>
-        {posts.map(post => {
-          const title = post.frontmatter.title || post.fields.slug
-
+      <div>
+        {groups.map(group => {
+          const latestPosts = group.nodes.slice(0, 3)
           return (
-            <li key={post.fields.slug}>
-              <article
-                className="post-list-item"
-                itemScope
-                itemType="http://schema.org/Article"
-              >
-                <header>
-                  <h2>
-                    <Link to={post.fields.slug} itemProp="url">
-                      <span itemProp="headline">{title}</span>
-                    </Link>
-                  </h2>
-                  <small>{post.frontmatter.date}</small>
-                </header>
-                <section>
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: post.frontmatter.description || post.excerpt,
-                    }}
-                    itemProp="description"
-                  />
-                </section>
-              </article>
-            </li>
+            <section key={group.fieldValue}>
+              <h3 className="">{group.fieldValue}</h3>
+              <div className="mb-4 w-full border-b border-gray-300" />
+              <div className="flex justify-between cards gap-3">
+                {latestPosts.map(post => (
+                  <div key={post.fields.slug} className="p-1 hover:border-b border-gray-300">
+                    <h5>{post.frontmatter.title}</h5>
+                    <p className="w-[90%]">{post.excerpt}</p>
+                    <div>{post.frontmatter?.tags?.length > 0 && post.frontmatter.tags.split(",").map(tag => (
+                      <span className="p-1 rounded bg-gray-300 mr-1 mb-1 text-sm" key={tag}>{tag}</span>))}</div>
+                    <a href={post.fields.slug}>Read More</a>
+                  </div>
+                ))}
+              </div>
+            </section>
           )
         })}
-      </ol>
+      </div>
     </Layout>
   )
 }
@@ -78,17 +69,22 @@ export const pageQuery = graphql`
       }
     }
     allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
-      nodes {
-        excerpt
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          title
-          description
+      group(field: frontmatter___category) {
+        fieldValue
+        nodes {
+          excerpt
+          fields {
+            slug
+          }
+          frontmatter {
+            title
+            date(formatString: "MMMM DD, YYYY")
+            description
+            tags
+          }
         }
       }
     }
   }
 `
+

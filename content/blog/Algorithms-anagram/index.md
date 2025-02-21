@@ -1,7 +1,9 @@
 ---
-title: Algorithms - Anagram
+title: Anagram
 date: "2024-05-28T22:40:32.169Z"
 description: How to efficiently solve an anagram
+category: "Algorithms"
+tags: "algorithms, anagram"
 ---
 
 > **Problem**   
