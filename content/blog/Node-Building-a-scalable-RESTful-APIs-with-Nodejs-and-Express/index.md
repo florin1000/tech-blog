@@ -50,12 +50,12 @@ In this article, I'll build an API to manage digital agents using Node.js and Ex
 Through this project, you'll learn how to design a scalable RESTful API, set up endpoints,
 integrate middleware, and apply best practices for scalability.
 
-- **GET** */agents* : List all AI agents.
-- **POST** */agents* : Create a new AI agent.
-- **GET** */agents/:id* : Retrieve details about a specific agent.
-- **PUT** */agents/:id*  : Update an agent’s attributes (e.g., status, current task).
-- **DELETE** */agents/:id*  : Remove an agent.
-- **POST** */agents/:id/execute*  : Instruct an agent to perform a task, simulating an AI action.
+* - **GET** */agents* : List all AI agents.
+* - **POST** */agents* : Create a new AI agent.
+* - **GET** */agents/:id* : Retrieve details about a specific agent.
+* - **PUT** */agents/:id*  : Update an agent’s attributes (e.g., status, current task).
+* - **DELETE** */agents/:id*  : Remove an agent.
+* - **POST** */agents/:id/execute*  : Instruct an agent to perform a task, simulating an AI action.
 
 **What you'll learn:**
 
@@ -113,12 +113,11 @@ app.get("/agents", (req, res) => {
 #### 2.3. Middleware (basic)
 
 Middleware functions in Express are at the heart of request processing. They have access to the request object (req), the response object (res), and the next middleware function in the chain (next). Middleware can perform tasks such as:
-
-- Logging requests
-- Parsing request bodies (e.g., JSON or URL-encoded data)
-- Handling authentication and authorization
-- Managing sessions or cookies
-- Error handling
+* - Logging requests
+* - Parsing request bodies (e.g., JSON or URL-encoded data)
+* - Handling authentication and authorization
+* - Managing sessions or cookies
+* - Error handling
 
 ```js
 app.use((req, res, next) => {
@@ -222,12 +221,12 @@ In the code above, we import Express, create an application instance, and define
 As mentioned above we'll try to cover the main http methods that you will be going to use most of the time.
 These are the routes that the express.js server will serve:
 
-- **GET** */agents* : List all AI agents.
-- **POST** */agents* : Create a new AI agent.
-- **GET** */agents/:id* : Retrieve details about a specific agent.
-- **PUT** */agents/:id*  : Update an agent’s attributes (e.g., status, current task).
-- **DELETE** */agents/:id*  : Remove an agent.
-- **POST** */agents/:id/execute*  : Instruct an agent to perform a task, simulating an AI action.
+* - **GET** */agents* : List all AI agents.
+* - **POST** */agents* : Create a new AI agent.
+* - **GET** */agents/:id* : Retrieve details about a specific agent.
+* - **PUT** */agents/:id*  : Update an agent’s attributes (e.g., status, current task).
+* - **DELETE** */agents/:id*  : Remove an agent.
+* - **POST** */agents/:id/execute*  : Instruct an agent to perform a task, simulating an AI action.
 
 At the root of your project create a folder ```routes``` and inside the ```agents.js``` file where we will store the handlers for each route method.
 You should end up with a file like this:
@@ -347,7 +346,88 @@ app.get('/', (req, res) => {
 ```
 By understanding and controlling the order in which middleware is applied, you can ensure that all desired functionalities (like logging) are executed as expected.
 
+#### 3.2.2 Error Handling Middleware
+Error handling middleware in Express provides a centralized way to catch and process errors that occur during the request-response cycle. Instead of having error-handling code scattered throughout your route handlers, you can define a single middleware function that deals with errors uniformly. This not only simplifies your code but also makes it easier to maintain and update.
+Benefits of Centralized Error Handling:
 
+**Consistency**: All errors are processed in one place, ensuring that your API returns consistent responses for errors.   
+**Simplified Debugging**:Central logging of error details (like stack traces) makes it easier to diagnose issues.   
+**Separation of Concerns**: Keeps your route handlers focused on their main logic without cluttering them with repetitive error-handling code.
+
+Implementation:
+```js 
+// In your index.js 
+//place your error middleware last, so it doesn't interfere with other middleware 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  // Send a generic error response
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+```
+How It Works:
+
+1. When an error occurs in any of your route handlers or middleware, you call next(err) with the error object.   
+2. Express will skip any remaining non-error-handling middleware and pass the error to your error-handling middleware.
+3. The error-handling middleware logs the error and sends a standardized HTTP response (in this case, a 500 Internal Server Error).
+
+By centralizing error handling, you ensure that every error is managed uniformly and that your API responses remain consistent—even in the face of unexpected issues.   
+#### 3.2.3 Security Middleware with Helmet
+Security is a crucial aspect of any web application. One of the simplest and most effective ways to secure your Express app is by using Helmet—a collection of middleware functions that help secure HTTP headers. Helmet helps protect your app from well-known web vulnerabilities by setting various HTTP headers appropriately.
+How Helmet Enhances Security:
+Helmet sets multiple HTTP headers to improve security, including:
+
+**X-DNS-Prefetch**-Control: Controls browser DNS prefetching.   
+**Strict-Transport-Security**: Enforces secure (HTTPS) connections to the server.   
+**X-Frame-Options**: Protects against clickjacking by controlling whether your content can be displayed in a frame.   
+**X-Content-Type**-Options: Prevents browsers from MIME-sniffing a response away from the declared content-type.   
+**X-XSS-Protection**: Enables the browser’s built-in cross-site scripting filters.   
+
+By automatically setting these headers, Helmet provides a layer of protection against common attacks, such as cross-site scripting (XSS) and clickjacking, without much configuration on your part.
+Integrating Helmet:
+```js
+//index.js
+const helmet = require('helmet');
+app.use(helmet());
+```
+Helmet should be placed early in your middleware stack to ensure that every response has secure HTTP headers applied.
+For now, we'll focus on Helmet as our primary security middleware, and we’ll dive deeper into these additional practices(input validation, authentication, rate limiting etc.) in upcoming chapters.
+Now that we have managed to understand and install the main middlewares you should end up with an index.js like this:
+
+Flow Summary   
+In our Express application, middleware is executed sequentially, and the order in which you apply them is crucial:   
+**Logging Middleware (Morgan)**: Morgan is placed first to ensure every incoming HTTP request is logged. This logging provides valuable insights during development and debugging, as it captures details like the request method, URL, status code, and response time.     
+**Security Middleware (Helmet)**:Next, Helmet is applied early in the middleware stack. This middleware automatically sets various HTTP headers that help protect your application from common vulnerabilities such as cross-site scripting (XSS) and clickjacking.   
+**Routes and Application Logic**:With logging and security in place, your application's routes (e.g., those handling AI agents) are mounted. This means that by the time a request reaches your route handlers, it’s already logged and secured.        
+**Error Handling Middleware**:Finally, the error-handling middleware is added at the end of the middleware chain. This ensures that if any part of the request-response cycle encounters an error, it will be caught and handled in a centralized manner—providing consistent error responses and logging error details for debugging.   
+   
+By following this flow, your application ensures that each request is properly logged, secured, and that any errors are managed uniformly. The final integrated index.js snippet below demonstrates how these middleware components work together to create a robust Express application.
+```js
+const express = require('express')
+const app = express()
+const port = 3000
+const morgan = require('morgan');
+const agentsRouter = require('./routes/agents');
+const helmet = require('helmet');
+
+
+app.use(morgan('combined'));
+app.use(helmet());
+app.use('/api', agentsRouter);
+
+app.get('/', (req, res) => {
+  res.send('Welcome to AI agents app')
+})
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+
+```
 #### Optional Typescript
 https://github.com/florin1000/ai-agents
 #### Reference
