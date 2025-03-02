@@ -179,7 +179,7 @@ As I mentioned above, a cornerstone of REST is that each API request is stateles
 As your API evolves, changes might break compatibility with older client applications. To introduce new features or improvements without disrupting existing clients. Having a robust versioning system allows for a gradual transition where clients can upgrade at their own pace.
 Common version strategies:
 
-- **URIVersioning** Include the version in the URL, such as _/v1/agents_ or _/api/v1/agents_
+- **URI Versioning** Include the version in the URL, such as _/v1/agents_ or _/api/v1/agents_
 - **Header Versioning** Specify the API version in a custom HTTP header (e.g., _Accept: application/vnd.myapi.v1+json_).
 - **Query Parameters** Pass the version as a parameter in the query string, e.g., _/agents?version=1_.
 
@@ -215,6 +215,8 @@ and add this code to your entry file (```index.js``` in my case).
 const express = require('express');
 const app = express()
 const port = 3000
+app.use(express.json());
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (req, res) => {
   res.send('Welcome to AI agents app')
@@ -370,8 +372,8 @@ By understanding and controlling the order in which middleware is applied, you c
 Error handling middleware in Express provides a centralized way to catch and process errors that occur during the request-response cycle. Instead of having error-handling code scattered throughout your route handlers, you can define a single middleware function that deals with errors uniformly. This not only simplifies your code but also makes it easier to maintain and update.
 Benefits of Centralized Error Handling:
 
-- **Consistency**: All errors are processed in one place, ensuring that your API returns consistent responses for errors.   
-- **Simplified Debugging**:Central logging of error details (like stack traces) makes it easier to diagnose issues.   
+- **Consistency**: All errors are processed in one place, ensuring that your API returns consistent responses for errors.
+- **Simplified Debugging**:Central logging of error details (like stack traces) makes it easier to diagnose issues.
 - **Separation of Concerns**: Keeps your route handlers focused on their main logic without cluttering them with repetitive error-handling code.
 
 Implementation:
@@ -401,10 +403,10 @@ Security is a crucial aspect of any web application. One of the simplest and mos
 How Helmet Enhances Security:
 Helmet sets multiple HTTP headers to improve security, including:
 
-- **X-DNS-Prefetch**-Control: Controls browser DNS prefetching.   
-- **Strict-Transport-Security**: Enforces secure (HTTPS) connections to the server.   
-- **X-Frame-Options**: Protects against click-jacking by controlling whether your content can be displayed in a frame.   
-- **X-Content-Type**-Options: Prevents browsers from MIME-sniffing a response away from the declared content-type.   
+- **X-DNS-Prefetch**-Control: Controls browser DNS prefetching.
+- **Strict-Transport-Security**: Enforces secure (HTTPS) connections to the server.
+- **X-Frame-Options**: Protects against click-jacking by controlling whether your content can be displayed in a frame.
+- **X-Content-Type**-Options: Prevents browsers from MIME-sniffing a response away from the declared content-type.
 - **X-XSS-Protection**: Enables the browser’s built-in cross-site scripting filters.
 
 By automatically setting these headers, Helmet provides a layer of protection against common attacks, such as cross-site scripting (XSS) and clickjacking, without much configuration on your part.
@@ -421,10 +423,11 @@ For now, we'll focus on Helmet as our primary security middleware, and we’ll d
 Now that we have managed to understand and install the main middlewares you should end up with an index.js like this:
 
 Flow Summary   
-In our Express application, middleware is executed sequentially, and the order in which you apply them is crucial:   
-- **Logging Middleware (Morgan)**: Morgan is placed first to ensure every incoming HTTP request is logged. This logging provides valuable insights during development and debugging, as it captures details like the request method, URL, status code, and response time.     
-- **Security Middleware (Helmet)**:Next, Helmet is applied early in the middleware stack. This middleware automatically sets various HTTP headers that help protect your application from common vulnerabilities such as cross-site scripting (XSS) and clickjacking.   
-- **Routes and Application Logic**:With logging and security in place, your application's routes (e.g., those handling AI agents) are mounted. This means that by the time a request reaches your route handlers, it’s already logged and secured.        
+In our Express application, middleware is executed sequentially, and the order in which you apply them is crucial:
+
+- **Logging Middleware (Morgan)**: Morgan is placed first to ensure every incoming HTTP request is logged. This logging provides valuable insights during development and debugging, as it captures details like the request method, URL, status code, and response time.
+- **Security Middleware (Helmet)**:Next, Helmet is applied early in the middleware stack. This middleware automatically sets various HTTP headers that help protect your application from common vulnerabilities such as cross-site scripting (XSS) and clickjacking.
+- **Routes and Application Logic**:With logging and security in place, your application's routes (e.g., those handling AI agents) are mounted. This means that by the time a request reaches your route handlers, it’s already logged and secured.
 - **Error Handling Middleware**:Finally, the error-handling middleware is added at the end of the middleware chain. This ensures that if any part of the request-response cycle encounters an error, it will be caught and handled in a centralized manner—providing consistent error responses and logging error details for debugging.
 
 By following this flow, your application ensures that each request is properly logged, secured, and that any errors are managed uniformly. The final integrated index.js snippet below demonstrates how these middleware components work together to create a robust Express application.
@@ -462,51 +465,73 @@ As the name of this article suggest, we should focus on scalability a node.js/ex
 
 #### 4.1 Caching Strategies
 
-Caching is a powerful technique to improve the performance and scalability of your RESTful APIs. At its core, caching involves storing the results of expensive operations—like frequent database queries—in a temporary storage area (the cache) so that subsequent requests can be served quickly without hitting the database every time.   
+Caching is a powerful technique to improve the performance and scalability of your RESTful APIs. At its core, caching involves storing the results of expensive operations—like frequent database queries—in a temporary storage area (the cache) so that subsequent requests can be served quickly without hitting the database every time.
 
-#### 4.1.1 **Caching advantages**   
+#### 4.1.1 **Caching advantages**
+
 - **Reduced Database Load**:By keeping frequently requested data in memory, caching significantly decreases the number of direct database calls. This not only speeds up response times but also reduces the strain on your database server, allowing it to handle more complex queries or scale better under high load.
 - **Improved Response Times**:Accessing data from memory is much faster than fetching it from disk or executing a database query. This can be critical for high-traffic applications where every millisecond counts in delivering a smooth user experience.
 - **Cost Efficiency**:Reducing database interactions can help lower your operational costs, especially when using cloud-based databases that charge based on the number of read/write operations.
 
-#### 4.1.2 **Types of Caching Strategies**   
-1. **In-Memory Caching**: This type of caching stores data in the server's memory, allowing for rapid access. Common tools for in-memory caching in Node.js include Redis and Node-Cache.   
- * Use Case: Ideal for caching small amounts of data that need to be accessed frequently.      
- * Example: Storing user session data or frequently accessed configuration settings.
+#### 4.1.2 **Types of Caching Strategies**
+
+1. **In-Memory Caching**: This type of caching stores data in the server's memory, allowing for rapid access. Common tools for in-memory caching in Node.js include Redis and Node-Cache.
+
+* Use Case: Ideal for caching small amounts of data that need to be accessed frequently.
+* Example: Storing user session data or frequently accessed configuration settings.
+
 2. **HTTP Caching**: This involves caching responses on the client-side or intermediate proxies, reducing the need to repeatedly fetch the same data from the server.
- * Use Case: Suitable for static assets like images, stylesheets, and scripts.
- * Example: Setting HTTP headers such as Cache-Control and ETag to manage client-side caching.
+
+* Use Case: Suitable for static assets like images, stylesheets, and scripts.
+* Example: Setting HTTP headers such as Cache-Control and ETag to manage client-side caching.
+
 3. **Database Caching**: This strategy involves caching database query results, reducing the need to repeatedly execute the same queries.
- * Use Case: Useful for read-heavy applications with frequent database queries.
- * Example: Using a tool like Redis to cache the results of complex database queries.
+
+* Use Case: Useful for read-heavy applications with frequent database queries.
+* Example: Using a tool like Redis to cache the results of complex database queries.
+
 4. **Application-Level Caching**: This approach caches the output of specific functions or API calls within the application.
- * Use Case: Effective for caching expensive computations or third-party API responses.
- * Example: Caching the results of a weather API call that doesn't change frequently.
+
+* Use Case: Effective for caching expensive computations or third-party API responses.
+* Example: Caching the results of a weather API call that doesn't change frequently.
 
 #### 4.1.3 Example: In memory caching with **Redis**   (will update the current ai-agents project)
+
 !!check commit (# caching with Redis)
+
 1. install redis ```npm install redis```
-2. set up a redis client module
+2. run "redis db" for simplicity I will run it in a docker container
+
+```bash
+docker run --name my-redis -p 6379:6379 -d redis
+```
+
+3. set up a redis client module
+
 ```js
 const redis = require('redis');
 
 const redisClient = redis.createClient();
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
- 
+
 (async () => {
   await redisClient.connect();
 })();
 
 module.exports = redisClient;
 ```
-3. create a cache middleware
+
+4. create a cache middleware
+
 ```js
 //caching-middleware/caching.js
 const redisClient = require('../redisClient');
+
 async function cache(req, res, next) {
   const { id } = req.params; // Adjust based on your route parameters
   try {
     const cachedData = await redisClient.get(`data:${id}`);
+    console.log(`Cache hit for agent ${id}`);
     if (cachedData) {
       return res.json(JSON.parse(cachedData));
     }
@@ -516,14 +541,17 @@ async function cache(req, res, next) {
     next();
   }
 }
+
 module.exports = cache;
 
 ```
-4. Cache Data: Cache the data after processing the request if it is not already cached.   
+
+5. Cache Data: Cache the data after processing the request if it is not already cached.
+
 ```js
 router.get('/agents/:id', cache, async (req, res, next) => {
-  const {id} = req.params;
-  const dataFromDB = {id, name: 'Example Data'};
+  const { id } = req.params;
+  const dataFromDB = { id, name: 'Example Data' };
 
   // Store the result in Redis with a TTL (time to live) of 3600 seconds
   //each time a request is made to this route the middleware check if the data is cached and if so
@@ -535,25 +563,37 @@ router.get('/agents/:id', cache, async (req, res, next) => {
 ```
 
 #### 4.1.4 **Best Practices for Caching**
-* **Cache Invalidation**: Ensure that stale or outdated data is invalidated and removed from the cache to maintain data consistency. This might include time-to-live (TTL) settings or event-driven updates to clear or refresh cache entries when the underlying data changes.      
-* **Cache Granularity**: Cache data at the appropriate level of granularity. Too fine-grained caching can lead to overhead, while too coarse-grained caching may reduce cache effectiveness.   
-* **Monitoring and Metrics**: Implement monitoring and logging to track cache hits, misses, and performance metrics, allowing for continuous optimization. Tools like Redis' built-in monitoring features can help you understand how effectively your caching strategy is reducing the load on your database.      
-#### 4.1.5 **Caching Conclusion**
-By integrating caching strategies into your Node.js and Express applications, you can significantly enhance the scalability and responsiveness of your APIs. This approach not only optimizes resource usage but also provides a smoother experience for your users.   
 
-#### 4.2 Load balancing   
-Load balancing is a critical technique for scaling Node.js and Express applications, ensuring that incoming requests are distributed across multiple servers. This not only improves performance but also enhances fault tolerance.   
+* **Cache Invalidation**: Ensure that stale or outdated data is invalidated and removed from the cache to maintain data consistency. This might include time-to-live (TTL) settings or event-driven updates to clear or refresh cache entries when the underlying data changes.
+* **Cache Granularity**: Cache data at the appropriate level of granularity. Too fine-grained caching can lead to overhead, while too coarse-grained caching may reduce cache effectiveness.
+* **Monitoring and Metrics**: Implement monitoring and logging to track cache hits, misses, and performance metrics, allowing for continuous optimization. Tools like Redis' built-in monitoring features can help you understand how effectively your caching strategy is reducing the load on your database.
+
+#### 4.1.5 **Caching Conclusion**
+
+By integrating caching strategies into your Node.js and Express applications, you can significantly enhance the scalability and responsiveness of your APIs. This approach not only optimizes resource usage but also provides a smoother experience for your users.
+
+#### 4.2 Load balancing
+
+Load balancing is a critical technique for scaling Node.js and Express applications, ensuring that incoming requests are distributed across multiple servers. This not only improves performance but also enhances fault tolerance.
+
 #### 4.2.1 How Load Balancing Distributes Incoming Requests
+
 Load balancers sit between clients and servers, distributing incoming requests across multiple server instances. This helps prevent any single server from becoming overloaded, ensuring smooth and efficient handling of traffic.
-#### 4.2.2 Types of Load Balancers:   
-* **Reverse Proxies**: Reverse proxies like NGINX or Apache HTTP Server forward client requests to one or more backend servers. They can handle SSL termination, caching, and load balancing.In addition to load balancing, reverse proxies provide a security layer by hiding the details of backend servers from external clients, reducing the overall attack surface.      
-* **External Load Balancers**: Cloud providers like AWS, Google Cloud, and Azure offer managed load balancing services. These external load balancers can distribute traffic across multiple instances, manage fail-overs, and integrate with other cloud services.   
+
+#### 4.2.2 Types of Load Balancers:
+
+* **Reverse Proxies**: Reverse proxies like NGINX or Apache HTTP Server forward client requests to one or more backend servers. They can handle SSL termination, caching, and load balancing.In addition to load balancing, reverse proxies provide a security layer by hiding the details of backend servers from external clients, reducing the overall attack surface.
+* **External Load Balancers**: Cloud providers like AWS, Google Cloud, and Azure offer managed load balancing services. These external load balancers can distribute traffic across multiple instances, manage fail-overs, and integrate with other cloud services.
 * **Distribution Algorithms**:
-1. Round Robin: Distributes requests in a sequential, cyclic manner.   
-1. Least Connections: Directs traffic to the server with the fewest active connections.   
-1. IP Hash: Uses the client’s IP address to consistently assign requests to the same server, which can be useful for session persistence.     
+
+1. Round Robin: Distributes requests in a sequential, cyclic manner.
+1. Least Connections: Directs traffic to the server with the fewest active connections.
+1. IP Hash: Uses the client’s IP address to consistently assign requests to the same server, which can be useful for session persistence.
+
 #### 4.2.3 Leveraging Node.js Clustering for Multi-Core Systems
-Node.js applications are single-threaded by nature, meaning they can only use one CPU core. Clustering allows you to take advantage of multi-core systems by creating multiple Node.js processes, each running on a separate core.   
+
+Node.js applications are single-threaded by nature, meaning they can only use one CPU core. Clustering allows you to take advantage of multi-core systems by creating multiple Node.js processes, each running on a separate core.
+
 ```js
 const cluster = require('cluster');
 const http = require('http');
@@ -576,10 +616,13 @@ if (cluster.isMaster) {
 }
 
 ```
+
 #### 4.2.3 Popular Load Balancers
-* **HAProxy**: Another widely used load balancer known for its reliability and performance, often used in high-availability setups.   
+
+* **HAProxy**: Another widely used load balancer known for its reliability and performance, often used in high-availability setups.
 * **NGINX**: A high-performance load balancer that can handle millions of concurrent connections. Ideal for reverse proxy and web server functionality.   
   Example Load Balancer Configuration with NGINX:
+
 ```nginx
 http {
   upstream myapp {
@@ -602,20 +645,199 @@ http {
 }
 
 ```
+
 #### 4.2.4 Health Checks and Failover
+
 Load balancers perform health checks to monitor the status of servers. If a server fails, the load balancer reroutes traffic to healthy servers, ensuring continuous availability.
+
 #### 4.2.5 Autoscaling
+
 Combining load balancing with autoscaling allows your application to dynamically adjust the number of running instances based on traffic load. This ensures optimal resource utilization and cost efficiency.
+
 #### 4.2.6 Load balancing Conclusion
+
 Implementing load balancing is essential for scaling your Node.js/Expressapplications. By distributing incoming requests, leveraging multi-core systems with Node.jsclustering, and ensuring high availability with health checks and autoscaling, you can create a robust and scalable application architecture.
-#### 4.3 Performance Optimization   
 
+#### 4.3 Performance Optimization
 
-#### Optional Typescript
+Efficient performance is essential for building scalable Node.js applications. Beyond caching and load balancing, optimizing your application’s performance involves writing non-blocking, asynchronous code and managing processes effectively. In this section, we'll briefly cover the importance of asynchronous programming and introduce process management tools like PM2.
+
+#### 4.3.1 Asynchronous Programming in NOde.s/Express.js
+
+As we discussed at the beginning of this article Node.js is designed around an event-driven, non-blocking architecture. This design allows your application to handle multiple operations concurrently without waiting for tasks like file I/O or network requests to finish.   
+**Benefits of Asynchronous Programming**:
+
+* **Non-Blocking I/O**: Asynchronous operations prevent the application from being held up by time-consuming tasks like database queries, file I/O, and network requests.
+* **Improved Responsiveness:** By handling tasks asynchronously, the application can remain responsive even under heavy load, providing a smoother user experience.
+* **Efficient Resource Utilization**: Asynchronous programming enables better utilization of system resources, allowing the application to handle more concurrent requests.   
+  As you can see in the previous code snippet, the get agent by _id_ contains an async/await code block (4.1.3 (4)) which will basically instruct that this code to be asynchronous processed, which means that it won't block the main thread, will be deferred to a child process which will notify the main tread o f it's completion through a callback.
+
+#### 4.3.1 Process Management with PM2
+
+PM2 is a powerful process manager for Node.js applications that offers features like process management, load balancing through clustering, monitoring, and zero-downtime reloads. PM2 helps you manage and scale your applications efficiently, ensuring they run smoothly in production environments.
+Benefits of Using PM2:
+
+* **Process Management**: Start, stop, restart, and monitor multiple Node.js processes with ease.
+* **Clustering**: Utilize multiple CPU cores by running multiple instances of your application, improving performance and fault tolerance.
+* **Monitoring and Logging**: Track metrics such as CPU and memory usage, and view logs for debugging and performance analysis.
+  basic example of using PM2 module
+
+```bash
+npm install -g pm2
+pm2 start app.js
+pm2 start app.js -i max  
+pm2 monit  
+pm2 logs
+```
+
+While this section provides an overview of performance optimization techniques such as asynchronous programming and process management with PM2, a deeper dive into these topics will be covered in future articles. We will explore advanced concepts, best practices, and real-world examples to help you master performance optimization in your Node.js applications.
+
+#### 4.4 Testing the endpoints for _Ai agents_ app
+
+Run ```node index.js``` in the root folder of the app.
+Testing can be done in multiple ways, running the server and open a browser or using _curl_ in the console. I will be using _curl_.
+This will be my dummy agents' data:
+
+```js
+//data.js
+const agents = [
+  {
+    id: 1,
+    name: 'ChatBot Alpha',
+    capabilities: ['Natural Language Processing', 'Sentiment Analysis'],
+    status: 'Active',
+    createdAt: '2025-01-15T08:00:00Z',
+  },
+  {
+    id: 2,
+    name: 'VisionBot Beta',
+    capabilities: ['Image Recognition', 'Object Detection'],
+    status: 'Inactive',
+    createdAt: '2025-01-20T10:30:00Z',
+  },
+  {
+    id: 3,
+    name: 'VoiceBot Gamma',
+    capabilities: ['Speech Recognition', 'Voice Synthesis'],
+    status: 'Active',
+    createdAt: '2025-02-05T14:45:00Z',
+  },
+  {
+    id: 4,
+    name: 'DataBot Delta',
+    capabilities: ['Data Analysis', 'Predictive Analytics'],
+    status: 'Maintenance',
+    createdAt: '2025-02-10T09:15:00Z',
+  }]
+module.exports = agents;
+```
+
+I will add here the list of curl commands with explanation for each of it:
+
+```bash
+//get all agents
+curl -X GET http://localhost:3000/api/agents
+//post a new agent
+curl -X POST http://localhost:3000/api/agents -H "Content-Type: application/json" -d '{"id": 5, "name": "ChatBot Alpha Beta", "capabilities": ["Natural Language Processing"], "status": "Active", "createdAt": "2025-02-15T08:00:00Z"}'
+//get an agent  by id (id===1)
+curl -X GET http://localhost:3000/api/agents/1
+// update an agent by id(id===4)
+curl -X PUT http://localhost:3000/api/agents/4 -H "Content-Type: application/json" -d '{"name": "ChatBot Alpha", "capabilities": ["Natural Language Processing", "Sentiment Analysis"], "status": "Active", "createdAt": "2025-01-15T08:00:00Z"}'
+//delete an agen by id(id===2)
+curl -X DELETE http://localhost:3000/api/agents/1
+//instruct an agent to perform a task
+curl -X POST http://localhost:3000/api/agents/1/execute -H "Content-Type: application/json" -d '{"task": "Execute Task"}'
+```
+
+1. retrieving the list of agents(get all agents):
+
+```js
+//route handler in the agents.js
+router.get('/agents', (req, res, next) => {
+  res.json(agents);
+});
+```
+
+you will retrieve the list of agents.
+
+2. create a new agent (post a new agent)
+
+```js
+router.post('/agents', (req, res, next) => {
+  const newAgent = req.body;
+  console.log('New Agent:', newAgent);
+  agents.push(newAgent)
+  res.status(201).json(newAgent);
+});
+```
+
+3. get an agent by id:
+
+```js
+router.get('/agents/:id', cache, async (req, res, next) => {
+  const { id } = req.params;
+  const agent = agents.find(agent => agent.id === +id);
+  console.log('agent ', agent)
+  // Store the result in Redis with a TTL (time to live) of 3600 seconds
+  await redisClient.setEx(`data:${id}`, 3600, JSON.stringify(agent));
+
+  res.json(agent);
+});
+```
+
+In this method as you can see we have redis db for caching so if you try to retrieve the second time the same agent(in no more than 1h) you will
+get the response from the cached response. Check the console where you haev run the project, first time you will se the console.log for the
+agent and if you run the same command you will see the console from caching :
+
+```js
+ console.log(`Cache hit for agent ${id}`);
+ ```
+
+4. update an agent
+   In this method we identify the agent that needs to be updated and then we replace it in that list of agent with the new one
+
+```js
+router.put('/agents/:id', (req, res, next) => {
+  const { id } = req.params;
+  const updatedAgent = req.body;
+  const index = agents.findIndex(agent => agent.id === +id);
+
+  if (index !== -1) {
+    agents.splice(index, 1, { ...agents[index], ...updatedAgent });
+    res.status(200).json({ message: `Agent ${id} updated`, agent: agents[index] });
+  } else {
+    res.status(404).json({ message: `Agent ${id} not found` });
+  }
+});
+```
+5. delete an agent by id (id===2)
+```js
+router.delete('/agents/:id', (req, res, next) => {
+  const {id} = req.params;
+  const index = agents.findIndex(agent => agent.id === +id);
+  if (index !== -1) {
+    agents.splice(index, 1);
+    res.status(200).json({message: `Agent ${id} deleted`, agents});
+  } else {
+    res.status(404).json({message: `Agent ${id} not found`});
+  }
+});
+```
+You will retrieve the list of agents without the deleted one
+
+6. Executing a task (you will receive the message "Agent ${id} is executing a task")
+```js
+router.post('/agents/:id/execute', (req, res, next) => {
+  const {id} = req.params;
+  res.send(`Agent ${id} is executing a task`);
+});
+```
+
 
 https://github.com/florin1000/ai-agents
 
 #### Reference
+
 - [Dr Roy Fleming - Architectural Styles and the Design of Network-based Software Architectures, chapter 5](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 - [Node.js - I/O model](https://nodejs.org/en/about)
 - [Express.js - I/O model](https://expressjs.com/)
@@ -623,4 +845,6 @@ https://github.com/florin1000/ai-agents
 - [Express.js - Middleware](https://expressjs.com/en/guide/using-middleware.html)
 - [API Caching: Techniques for Better Performance](https://pieces.medium.com/api-caching-techniques-for-better-performance-6297ec1ac02c)
 - [IBM - What is REST](https://www.ibm.com/think/topics/rest-apis#:~:text=A%20REST%20API%20(also%20called,transfer%20(REST)%20architectural%20style)
+- [PM2](https://pm2.keymetrics.io/)
 
+Scalable RestfulAPIs with Node.js and Express(caching, load-balancing, clustering, PM@, Asynchronous,I/O))
