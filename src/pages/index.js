@@ -1,14 +1,15 @@
 import * as React from "react"
-import { Link, graphql } from "gatsby"
+import { graphql } from "gatsby"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
+import BlogCard from "../components/BlogCard"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Algorithms blog`
   const groups = data.allMarkdownRemark.group
-  console.log(groups)
 
   if (groups.length === 0) {
     return (
@@ -22,6 +23,12 @@ const BlogIndex = ({ data, location }) => {
       </Layout>
     )
   }
+  const cardWidth = (postsLength) => {
+    if (postsLength === 3) {
+      return "1/3"
+    }
+    return postsLength.length === 2 ? "1/2" : "full"
+  }
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -34,15 +41,9 @@ const BlogIndex = ({ data, location }) => {
               <h3 className="">{group.fieldValue}</h3>
               <div className="mb-4 w-full border-b border-gray-300" />
               <div className="flex justify-between cards gap-3">
-                {latestPosts.map(post => (
-                  <div key={post.fields.slug} className="p-1 hover:border-b border-gray-300">
-                    <h5>{post.frontmatter.title}</h5>
-                    <p className="w-[90%]">{post.excerpt}</p>
-                    <div>{post.frontmatter?.tags?.length > 0 && post.frontmatter.tags.split(",").map(tag => (
-                      <span className="p-1 rounded bg-gray-300 mr-1 mb-1 text-sm" key={tag}>{tag}</span>))}</div>
-                    <a href={post.fields.slug}>Read More</a>
-                  </div>
-                ))}
+                {latestPosts.map(post => {
+                  return <BlogCard key={post.fields.slug} post={post} wdth={cardWidth(latestPosts.length)}/>
+                })}
               </div>
             </section>
           )
@@ -81,10 +82,14 @@ export const pageQuery = graphql`
             date(formatString: "MMMM DD, YYYY")
             description
             tags
+            heroImage {
+              childImageSharp {
+                gatsbyImageData(width: 600, quality: 90, layout: CONSTRAINED)
+              }
+            }
           }
         }
       }
     }
   }
 `
-

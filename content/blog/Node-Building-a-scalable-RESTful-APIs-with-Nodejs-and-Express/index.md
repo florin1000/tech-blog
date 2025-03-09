@@ -3,16 +3,16 @@ title: Scalable RestfulAPIs with Node.js and Express
 date: "2024-05-28T22:40:32.169Z"
 description: Building Scalable RESTful APIs with Node.js and Express
 category: "Node.js"
-tags: "Node.js, restAPI, scalability"
+tags: ["Node.js", "restAPI", "scalability"]
+heroImage: "./node-js-scalable-rest-api.webp"
 ---
+A REST API is an application programming interface (API) that follows the design principles of the REST architectural style.
+REST is based on a set of architectural constraints that leverage existing network protocols. REST is short for representational state transfer,
+and is a set of rules and guidelines about how you should build a web API.
 
 #### 1. Intro
 
 #### 1.1. What is REST API
-
-A REST API is an application programming interface (API) that follows the design principles of the REST architectural style.
-REST is based on a set of architectural constraints that leverage existing network protocols. REST is short for representational state transfer,
-and is a set of rules and guidelines about how you should build a web API.
 
 REST principles are:
 
@@ -810,29 +810,36 @@ router.put('/agents/:id', (req, res, next) => {
   }
 });
 ```
+
 5. delete an agent by id (id===2)
+
 ```js
 router.delete('/agents/:id', (req, res, next) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const index = agents.findIndex(agent => agent.id === +id);
   if (index !== -1) {
     agents.splice(index, 1);
-    res.status(200).json({message: `Agent ${id} deleted`, agents});
+    res.status(200).json({ message: `Agent ${id} deleted`, agents });
   } else {
-    res.status(404).json({message: `Agent ${id} not found`});
+    res.status(404).json({ message: `Agent ${id} not found` });
   }
 });
 ```
+
 You will retrieve the list of agents without the deleted one
 
 6. Executing a task (you will receive the message "Agent ${id} is executing a task")
+
 ```js
 router.post('/agents/:id/execute', (req, res, next) => {
-  const {id} = req.params;
+  const { id } = req.params;
   res.send(`Agent ${id} is executing a task`);
 });
 ```
 
+#### 5 Conclusion
+
+In this article, we explored several key strategies to build scalable Node.js REST APIs. By implementing caching, we significantly reduced database load and improved response times, while load balancing and Node.js clustering allowed us to distribute incoming requests efficiently and utilize multi-core systems. We also touched on performance optimization through asynchronous programming and set the stage for deeper dives into process management tools like PM2 in future articles.
 
 https://github.com/florin1000/ai-agents
 
