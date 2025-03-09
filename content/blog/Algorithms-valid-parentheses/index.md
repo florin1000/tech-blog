@@ -3,7 +3,8 @@ title: Valid Parentheses
 date: "2024-05-28T22:40:32.169Z"
 description: How to check for right pair of parentheses
 category: "Algorithms"
-tags: "algorithms, stacks, parentheses"
+tags: ["algorithms", "stacks", "parentheses"]
+heroImage: './parenthesses.webp'
 ---
 
 > **Problem**   
