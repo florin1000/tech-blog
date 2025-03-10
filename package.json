@@ -12,6 +12,8 @@
     "@fontsource/ibm-plex-mono": "^5.1.1",
     "@fontsource/ibm-plex-sans": "^5.1.1",
     "@fontsource/merriweather": "^5.0.8",
+    "@mdx-js/react": "^2.3.0",
+    "@theme-ui/mdx": "^0.17.2",
     "gatsby": "^5.14.1",
     "gatsby-plugin-feed": "^5.14.0",
     "gatsby-plugin-image": "^3.14.0",
@@ -29,7 +31,8 @@
     "gatsby-transformer-sharp": "^5.14.0",
     "prismjs": "^1.29.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "theme-ui": "^0.17.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.7",
