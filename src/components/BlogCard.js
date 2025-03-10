@@ -1,11 +1,11 @@
 import React from "react"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
-const BlogCard = ({ post, wdth }) => {
+const BlogCard = ({ post, width }) => {
   const image = getImage(post.frontmatter.heroImage)
 
   return (
-    <a href={post.fields.slug} key={post.fields.slug} className={`group flex box-shadow-custom border-gray-300 hover:border-blue-500 rounded-md overflow-hidden w-${wdth}`}>
+    <a href={post.fields.slug} key={post.fields.slug} className={`group flex box-shadow-custom border-gray-300 hover:border-blue-500 rounded-md overflow-hidden w-${width}`}>
       <div
         key={post.fields.slug}
       >

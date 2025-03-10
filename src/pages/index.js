@@ -42,7 +42,7 @@ const BlogIndex = ({ data, location }) => {
               <div className="mb-4 w-full border-b border-gray-300" />
               <div className="flex justify-between cards gap-3">
                 {latestPosts.map(post => {
-                  return <BlogCard key={post.fields.slug} post={post} wdth={cardWidth(latestPosts.length)}/>
+                  return <BlogCard key={post.fields.slug} post={post} width={cardWidth(latestPosts.length)}/>
                 })}
               </div>
             </section>
